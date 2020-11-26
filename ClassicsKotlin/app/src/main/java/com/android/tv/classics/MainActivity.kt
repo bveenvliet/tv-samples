@@ -74,9 +74,7 @@ class MainActivity : FragmentActivity() {
                     val channelId = uri.lastPathSegment
                     Log.d(TAG, "Navigating to browser for channel $channelId")
                     withContext(Dispatchers.Main) {
-                        Navigation.findNavController(activity, R.id.fragment_container)
-                                .navigate(NavGraphDirections.actionToMediaBrowser()
-                                        .setChannelId(channelId))
+                        Navigation.findNavController(activity, R.id.fragment_container).navigate(NavGraphDirections.actionToMediaBrowser(channelId))
                     }
                 }
 

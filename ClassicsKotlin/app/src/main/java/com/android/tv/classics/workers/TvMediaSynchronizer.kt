@@ -32,11 +32,11 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 
 /** Maps a JSONArray of strings */
-private fun <T>JSONArray.mapString(transform: (String) -> T): List<T> =
+private fun <T> JSONArray.mapString(transform: (String) -> T): List<T> =
         (0 until length()).map { transform(getString(it)) }
 
 /** Maps a JSONArray of objects */
-private fun <T>JSONArray.mapObject(transform: (JSONObject) -> T): List<T> =
+private fun <T> JSONArray.mapObject(transform: (JSONObject) -> T): List<T> =
         (0 until length()).map { transform(getJSONObject(it)) }
 
 /** Worker that parses metadata from our assets folder and synchronizes the database */
@@ -87,7 +87,7 @@ class TvMediaSynchronizer(private val context: Context, params: WorkerParameters
                             id = subItem.getString("id"),
                             title = subItem.getString("title"),
                             ratings = subItem.optJSONArray("ratings")?.mapString { x -> x },
-                            contentUri = subItem.getString("url")?.let { Uri.parse(it) }!!,
+                            contentUri = subItem.getString("url").let { Uri.parse(it) }!!,
                             playbackDurationMillis = subItem.getLong("duration") * 1000,
                             year = subItem.getInt("year"),
                             author = subItem.getString("director"),
@@ -112,7 +112,8 @@ class TvMediaSynchronizer(private val context: Context, params: WorkerParameters
         }
 
         /** Parses metadata from our assets folder and synchronizes the database */
-        @Synchronized fun synchronize(context: Context) {
+        @Synchronized
+        fun synchronize(context: Context) {
             Log.d(TAG, "Starting synchronization work")
             val database = TvMediaDatabase.getInstance(context)
             val feed = parseMediaFeed(context)
@@ -156,7 +157,7 @@ class TvMediaSynchronizer(private val context: Context, params: WorkerParameters
                     context.resources, R.mipmap.ic_channel_logo)
             val defaultChannelCollection = feed.collections.first().copy(
                     title = defaultChannelTitle, artUri = defaultChannelArtUri)
-            val defaultChannelUri = TvLauncherUtils.upsertChannel(
+            TvLauncherUtils.upsertChannel(
                     context, defaultChannelCollection,
                     database.metadata().findByCollection(defaultChannelCollection.id))
 

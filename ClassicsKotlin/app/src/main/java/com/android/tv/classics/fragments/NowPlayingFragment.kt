@@ -42,9 +42,7 @@ import com.android.tv.classics.R
 import com.android.tv.classics.models.TvMediaDatabase
 import com.android.tv.classics.models.TvMediaMetadata
 import com.android.tv.classics.utils.TvLauncherUtils
-import com.google.android.exoplayer2.ControlDispatcher
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -183,7 +181,7 @@ class NowPlayingFragment : VideoSupportFragment() {
         }
 
         // Initializes the video player
-        player = ExoPlayerFactory.newSimpleInstance(requireContext())
+        player = SimpleExoPlayer.Builder(activity as Context).build()
         mediaSession = MediaSessionCompat(requireContext(), getString(R.string.app_name))
         mediaSessionConnector = MediaSessionConnector(mediaSession)
 
@@ -269,7 +267,7 @@ class NowPlayingFragment : VideoSupportFragment() {
         }
 
         // Adds key listeners
-        playerGlue.host.setOnKeyInterceptListener { view, keyCode, event ->
+        playerGlue.host.setOnKeyInterceptListener { _, keyCode, event ->
 
             // Early exit: if the controls overlay is visible, don't intercept any keys
             if (playerGlue.host.isControlsOverlayVisible) return@setOnKeyInterceptListener false
